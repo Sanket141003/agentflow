@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: agentflow
+    runtime: node
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NEXT_PUBLIC_NHOST_SUBDOMAIN
+        sync: false
+      - key: NEXT_PUBLIC_NHOST_REGION
+        sync: false
+    autoDeploy: true
