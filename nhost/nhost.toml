@@ -1,0 +1,35 @@
+[global]
+[[global.environment]]
+name = 'GROQ_API_KEY'
+value = ''  # Set in nhost dashboard secrets
+
+[hasura]
+version = 'v2.38.0'
+adminSecret = '{{ secrets.NHOST_ADMIN_SECRET }}'
+webhookSecret = '{{ secrets.NHOST_WEBHOOK_SECRET }}'
+
+[[hasura.jwtSecrets]]
+type = 'HS256'
+key = '{{ secrets.HASURA_GRAPHQL_JWT_SECRET }}'
+
+[functions]
+node_version = 18
+
+[auth]
+version = '0.34.0'
+
+[auth.method.emailPassword]
+hibpEnabled = false
+
+[auth.totp]
+enabled = false
+
+[postgres]
+version = '14.6-20231018-1'
+
+[provider]
+[provider.smtp]
+host = 'mailhog'
+port = 1025
+secure = false
+sender = 'no-reply@example.com'

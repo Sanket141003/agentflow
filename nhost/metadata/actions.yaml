@@ -1,0 +1,74 @@
+actions:
+  - name: triggerWorkflowRun
+    definition:
+      kind: synchronous
+      handler: "{{NHOST_FUNCTIONS_URL}}/triggerWorkflowRun"
+      forward_client_headers: true
+    permissions:
+      - role: user
+    comment: Trigger a workflow run with permission and quota checks
+
+  - name: approveStep
+    definition:
+      kind: synchronous
+      handler: "{{NHOST_FUNCTIONS_URL}}/approveStep"
+      forward_client_headers: true
+    permissions:
+      - role: user
+    comment: Approve a paused approval_gate step - checks role server-side
+
+  - name: webhookTriggerWorkflow
+    definition:
+      kind: synchronous
+      handler: "{{NHOST_FUNCTIONS_URL}}/webhookTriggerWorkflow"
+    permissions:
+      - role: public
+    comment: External webhook endpoint to trigger a workflow run
+
+custom_types:
+  objects:
+    - name: TriggerWorkflowRunOutput
+      fields:
+        - name: workflow_run_id
+          type: uuid!
+        - name: status
+          type: String!
+        - name: message
+          type: String
+    - name: ApproveStepOutput
+      fields:
+        - name: step_run_id
+          type: uuid!
+        - name: workflow_run_id
+          type: uuid!
+        - name: status
+          type: String!
+        - name: message
+          type: String
+    - name: WebhookTriggerOutput
+      fields:
+        - name: workflow_run_id
+          type: uuid!
+        - name: status
+          type: String!
+  input_objects:
+    - name: TriggerWorkflowRunInput
+      fields:
+        - name: workflow_id
+          type: uuid!
+        - name: input_data
+          type: jsonb
+    - name: ApproveStepInput
+      fields:
+        - name: step_run_id
+          type: uuid!
+        - name: workflow_run_id
+          type: uuid!
+    - name: WebhookTriggerInput
+      fields:
+        - name: workflow_id
+          type: uuid!
+        - name: secret
+          type: String!
+        - name: input_data
+          type: jsonb

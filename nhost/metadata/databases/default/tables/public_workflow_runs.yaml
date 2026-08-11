@@ -1,0 +1,53 @@
+table:
+  name: workflow_runs
+  schema: public
+object_relationships:
+  - name: workflow
+    using:
+      foreign_key_constraint_on: workflow_id
+  - name: organization
+    using:
+      foreign_key_constraint_on: org_id
+array_relationships:
+  - name: step_runs
+    using:
+      foreign_key_constraint_on:
+        column: workflow_run_id
+        table:
+          name: step_runs
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns: [id, workflow_id, org_id, triggered_by, trigger_type, status, input_data, started_at, completed_at, error, created_at, updated_at]
+      filter:
+        org_id:
+          _in:
+            _select:
+              table:
+                name: org_members
+                schema: public
+              column: org_id
+              where:
+                user_id:
+                  _eq: X-Hasura-User-Id
+insert_permissions:
+  - role: user
+    permission:
+      columns: [workflow_id, org_id, trigger_type, input_data]
+      check:
+        org_id:
+          _in:
+            _select:
+              table:
+                name: org_members
+                schema: public
+              column: org_id
+              where:
+                _and:
+                  - user_id:
+                      _eq: X-Hasura-User-Id
+                  - role:
+                      _in: [owner, editor]
+      set:
+        triggered_by: "x-hasura-user-id"

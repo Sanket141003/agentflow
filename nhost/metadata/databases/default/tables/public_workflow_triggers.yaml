@@ -1,0 +1,79 @@
+table:
+  name: workflow_triggers
+  schema: public
+object_relationships:
+  - name: workflow
+    using:
+      foreign_key_constraint_on: workflow_id
+select_permissions:
+  - role: user
+    permission:
+      columns: [id, workflow_id, trigger_type, config, is_active, created_at]
+      filter:
+        workflow:
+          org_id:
+            _in:
+              _select:
+                table:
+                  name: org_members
+                  schema: public
+                column: org_id
+                where:
+                  user_id:
+                    _eq: X-Hasura-User-Id
+insert_permissions:
+  - role: user
+    permission:
+      columns: [workflow_id, trigger_type, config, is_active]
+      check:
+        workflow:
+          org_id:
+            _in:
+              _select:
+                table:
+                  name: org_members
+                  schema: public
+                column: org_id
+                where:
+                  _and:
+                    - user_id:
+                        _eq: X-Hasura-User-Id
+                    - role:
+                        _in: [owner, editor]
+update_permissions:
+  - role: user
+    permission:
+      columns: [config, is_active]
+      filter:
+        workflow:
+          org_id:
+            _in:
+              _select:
+                table:
+                  name: org_members
+                  schema: public
+                column: org_id
+                where:
+                  _and:
+                    - user_id:
+                        _eq: X-Hasura-User-Id
+                    - role:
+                        _in: [owner, editor]
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        workflow:
+          org_id:
+            _in:
+              _select:
+                table:
+                  name: org_members
+                  schema: public
+                column: org_id
+                where:
+                  _and:
+                    - user_id:
+                        _eq: X-Hasura-User-Id
+                    - role:
+                        _in: [owner, editor]
