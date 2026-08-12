@@ -4,7 +4,7 @@ A full-stack AI workflow builder (mini n8n) built with Next.js, nhost, Hasura, P
 
 ## Live Demo
 
-Deployed at: **[https://agentflow-ai.vercel.app](https://agentflow-ai.vercel.app)** *(update after deploy)*
+Deployed at: https://agentflow-w2yc.onrender.com
 
 ---
 
